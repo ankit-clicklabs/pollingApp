@@ -12,7 +12,12 @@ module.exports.endpoints=[
 
   {method:'POST',path:'/votePoll',config:{auth:'session'},handler:Poll.voteAnswer},
 
-  {method:'GET',path:'/login',handler:function(request,reply){reply.view('login')}},
+  { method:'GET',path:'/login',handler:function(request,reply){ 
+      var message=''; 
+      if(request.server.info.uri+'/signup'===request.info.referrer){
+           message="Please check your inbox for email verification link";
+        };
+      reply.view('login',{message:message})} },
 
   {method:'GET',path:'/verifymail/{token?}',handler:UserCont.verifyMail},
 
@@ -22,7 +27,7 @@ module.exports.endpoints=[
 
   {method:'GET',path:'/signup',handler:function(request,reply){reply.view('signup');}},
 
-  {method:'GET',path:'/admin',config:{auth:'session'},handler:function(request,reply){reply.view('admin/dashboard');}},
+  {method:'GET',path:'/admin',config:{ auth:'session'},handler:function(request,reply){reply.view('admin/dashboard');}},
 
   {method:'GET',path:'/admin/new/poll',config:{auth:'session',handler:AdminCont.newPoll}},
 

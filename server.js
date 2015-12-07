@@ -7,6 +7,7 @@ var Hapi =require('hapi'),
     Basic=require('hapi-auth-basic'),
     Ejs=require('ejs');
 var Inert = require('inert');
+var User=require('./model/user').User;
 
 var app={};
 
@@ -40,6 +41,7 @@ server.register(require('hapi-auth-cookie'), function (err) {
         cookie: 'pollingAPP',
         redirectTo: '/login',
         isSecure: false
+        
     });
 });
 

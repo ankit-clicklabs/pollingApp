@@ -23,11 +23,11 @@ exports.create    =   {
               var user=new User(request.payload);
               user.save(function(err,user){
                 if(!err){
-                  //console.log(request.server.info.uri);
+              
                  sendMail(user.email,user.token,request.server.info.uri);
 
 
-                  return reply.redirect('/login',{message:"Please check your mail for email-verification link"});
+                  return reply({message:"Please check your mail for email-verification link"}).redirect('/login');
 
                 }
                 if(err.code===11000 || err.code===11001 )
@@ -44,6 +44,7 @@ exports.login = function(request,reply){
        //return reply.redirect('/profile')
     }
 
+ 
 
     User.findOne({'email':request.payload.email},function(err,user){
         if(err)
@@ -59,6 +60,7 @@ exports.login = function(request,reply){
 
        request.auth.session.set(user);
        //console.log(request);
+
        return reply.redirect('/profile');
 
    });
@@ -69,7 +71,7 @@ exports.login = function(request,reply){
 
 exports.verifyMail=function(request,reply){
   var token = request.params.token || encodeURIComponent(request.params.token);
-
+  console.log(request.info.referrer)
 
   User.findOne({'token':token},function(err,token){
      if(err)

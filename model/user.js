@@ -24,9 +24,9 @@ var UserSchema = new Schema({
 
   avatar     : {type:String,default:''},
 
-  lastLogin  :{type:Date},
+  lastLogin  : {type:Date},
 
-  isloggedIn :{type:Number,default:0},
+  isloggedIn : {type:Number,default:0},
 
   token      : {type:String}
 
