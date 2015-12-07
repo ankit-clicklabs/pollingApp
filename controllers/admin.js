@@ -34,7 +34,7 @@ var newpoll={
    if(err)
    return Boom.badImplementation("Could not save the poll!!!");
    if(!pol) return Boom.forbidden("Could not save the question and answers");
-   reply.view('admin/polls',{message:'Your poll was saved'});
+   reply.view('admin/polls',{polls:pol,smessage:'Your poll was saved'});
  });
 
 }

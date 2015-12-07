@@ -15,12 +15,27 @@ exports.getPolls={
 }
 exports.voteAnswer=function(request,reply){
 
-//console.log(request.auth.credentials);
+
   Poll.findById(request.payload.questionID).exec(function(err,doc) {
-      if(err) return Boom.badImplementation("This sucks");
-          var answer=doc.answers.id(request.payload.answerId);
+      if(err) return Boom.badImplementation("There was some error while saving.Please try again after sometime.");
+
+        var answer=doc.answers.id(request.payload.answerId);
+
+        var voters=doc.answers.id(request.payload.answerId).voters;
+       
+      
+          if(voters.indexOf(request.auth.credentials._id)!==-1){
+              var indx=voters.indexOf(request.auth.credentials._id);
+              voters.splice(indx,1);
+              answer.votes=parseInt(answer.votes)-1;
+
+          }
+else{
         answer.votes=parseInt(answer.votes)+1;
+
+
         answer.voters.push(request.auth.credentials._id);
+      }
 
         doc.save(function(err,doc){
           if(err) Boom.badImplementation("fts");

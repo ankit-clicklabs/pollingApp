@@ -2,27 +2,6 @@
 </footer>
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
-<script>
-(function(j){
-  j(document).ready(function(){
 
-    j(document).on('click','.vote.btn.btn-primary.btn-block',function(event){
-      var questionID=j(this).parent().data('id');
-      var answerId=j(this).data('id');
-      var that=this;
-      j.ajax({
-        method:'POST',
-        url:'/votePoll',
-        data:{'questionID':questionID,'answerId':answerId},
-        success:function(data){
-        
-          j(that).find('.votes').text(data.ans);
-        }
-      })
-    });
-  });
-}
-(jQuery));
-</script>
 </body>
 </html>

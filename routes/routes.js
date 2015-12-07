@@ -16,7 +16,7 @@ module.exports.endpoints=[
 
   {method:'GET',path:'/verifymail/{token?}',handler:UserCont.verifyMail},
 
-  {method:  'POST',path: '/login',config: {handler: UserCont.login,auth: {mode: 'try',strategy: 'session'},plugins: {'hapi-auth-cookie': {redirectTo: false}}}},
+  {method:'POST',path: '/login',config: {handler: UserCont.login,auth: {mode: 'try',strategy: 'session'},plugins: {'hapi-auth-cookie': {redirectTo: false}}}},
 
   {method: 'GET',path: '/logout',config: {handler: UserCont.logout,auth: 'session'}},
 
@@ -42,4 +42,5 @@ module.exports.endpoints=[
 
   {method: 'GET',path: '/uploads/{param1*}',handler: {directory: {path: 'uploads',listing:true}}},
 
+  {method: 'GET',path: '/public/{param*}',handler:{directory:{path:'public',listing:true}}}
 ]
