@@ -1,0 +1,92 @@
+<%- include partials/header %>
+<%- include partials/log-nav %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <%
+
+      var message= message || '';
+      if(user && user.verified==0){
+        message="Your email address  is not verified .Please check your email for the verification link.";
+      }
+      if (message.length > 0) { %>
+               <div class="alert alert-danger"><%= message %></div>
+           <% }  %>
+
+          <form class="form-horizontal" action="/saveprofile" method="POST">
+                <fieldset>
+                      <div id="legend">
+                          <legend class="">Profile</legend>
+                      </div>
+
+                      <div class="control-group">
+                          <label class="control-label" for="username">Name</label>
+                          <div class="controls">
+                            <input type="text" id="username" name="name" placeholder="" value="<%= user['name'] %>" class="form-control input-lg">
+
+                          </div>
+                      </div>
+                      <div class="control-group">
+                          <label class="control-label" for="username">Email</label>
+                          <div class="controls">
+                            <input type="text" id="username" name="email" placeholder="" value="<%= user['email'] %>" class="form-control input-lg">
+
+                          </div>
+                      </div>
+                      <input type="hidden" name="userId" value="<%= user['email'] %>">
+
+                      <div class="control-group">
+
+                      </div>
+
+
+
+                      <div class="control-group" style="margin-top:10px;">
+                        <!-- Button -->
+                          <div class="controls">
+                              <button class="btn btn-success">Update</button>
+                          </div>
+                      </div>
+                </fieldset>
+        </form>
+
+    </div>
+    <div class="col-md-6">
+
+          <form class="form-horizontal" action="/fileup" method="POST" enctype="multipart/form-data">
+                <fieldset>
+                      <div id="legend">
+                          <legend class="">Profile Picture</legend>
+                      </div>
+
+                      <div class="control-group">
+                          <label class="control-label" for="username">Name</label>
+                          <div class="controls">
+                            <% if(user['avatar']==''){ %>
+                              <img src="http://www.socialagent.me/wp-content/uploads/2014/07/avatarDefault.png" height="200px" >
+                              <% } else { %>
+                            <img src="<%= user['avatar'] %>" height="200px" >
+<% } %>
+                          </div>
+                      </div>
+
+                      <div class="control-group">
+
+                      </div>
+
+
+<input type="hidden" name="email" value="<%= user['email'] %>">
+                      <div class="control-group" style="margin-top:10px;">
+                        <!-- Button -->
+                          <div class="controls">
+                              <input type="file" name="profilepic" value ="Change">
+                          </div>
+                      </div>
+                      <input type="submit">
+                </fieldset>
+        </form>
+
+    </div>
+  </div>
+</div>
+<%- include partials/footer %>

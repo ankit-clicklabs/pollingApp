@@ -1,0 +1,54 @@
+<%- include ../partials/header %>
+<%- include partials/nav %>
+<style>
+.question-group   {
+  margin-bottom:20px;
+  background:#EEE;
+  padding:20px;
+}
+.question-group label   {
+  font-size:18px;
+}
+
+.polls  {
+  display:flex;
+  flex-flow:row wrap;
+  justify-content:center;
+}
+.poll   {
+  width:25%;
+  margin:20px;
+}
+</style>
+<div class="container">
+  <div class="row">
+  	<div class="col-md-6">
+
+      <div class="row">
+                  <div class="col-md-6 col-md-offset-3">
+                      <form class="poll-form" method="POST">
+          <div class="form-group question-group">
+              <label>Question</label>
+              <input type="text" name="question" class="form-control" placeholder="Your Question">
+          </div>
+
+          <div class="form-group">
+              <label>Choice #1</label>
+              <input type="text" name="answers[]" class="form-control" placeholder="Choice #1">
+          </div>
+          <div class="form-group">
+              <label>Choice #2</label>
+              <input type="text" name="answers[]" class="form-control" placeholder="Choice #2">
+          </div>
+          <div class="form-group">
+              <label>Choice #3</label>
+              <input type="text" name="answers[]" class="form-control" placeholder="Choice #3">
+          </div>
+
+          <button type="submit" class="btn btn-lg btn-primary btn-block">Create Poll</button>
+      </form>
+                  </div>
+              </div></div>
+</div>
+</div>
+<%- include ../partials/footer %>

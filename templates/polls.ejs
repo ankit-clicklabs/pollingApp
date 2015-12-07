@@ -1,0 +1,33 @@
+<%- include partials/header %>
+<%- include partials/log-nav %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <%
+            var message= message || '';
+            if (message.length > 0) { %>
+            <div class="alert alert-success"><%= message %></div>
+            <% }  %>
+
+
+
+            <% for(var i=0;i<polls.length;i++){ %>
+            <div class="poll well well-lg" data-id="<%= polls[i]._id %>">
+
+                <h3 class="text-center"><%= polls[i].question %>?</h3>
+
+                <% for(var j=0;j<polls[i].answers.length;j++){ %>
+                <a href="javascript:void(0)" class="vote btn btn-primary btn-block" data-id="<%= polls[i].answers[j]._id %>"><%= polls[i].answers[j].title %>
+                    <span class="votes pull-right"><%= polls[i].answers[j].votes %></span>
+                    <span class="text"></span>
+                </a>
+                <% } %>
+
+
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<%- include partials/footer %>
