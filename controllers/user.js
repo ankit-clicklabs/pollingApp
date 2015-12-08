@@ -68,7 +68,7 @@ exports.login = function(request,reply){
 
        request.auth.session.set(user);
         if(request.payload.remember=='on'){
-          request.auth.session.ttl(7*24*60*1000);
+          request.auth.session.ttl(7*24*60*60*1000);
         }
        //console.log(request);
 
@@ -109,7 +109,7 @@ exports.picChange=function (request, reply) {
 
     var avatarUrl=request.server.info.uri+'/uploads/'+dirName+'/'+request.payload['profilepic'].hapi.filename;
     var uploadPath=fs.createWriteStream(uploadDir+'/'+request.payload['profilepic'].hapi.filename);
-console.log(require.main.filename);
+
     request.payload["profilepic"].pipe(uploadPath);
     request.payload["profilepic"].on('end',function(er,pho){
           request.payload["profilepic"].unpipe(uploadPath);
@@ -155,7 +155,11 @@ exports.saveProfile={
     payload:{
       email:Joi.string().required(),
       userId:Joi.string().required(),
-      name:Joi.string().required()
+      name:Joi.string().required(),
+      city:Joi.string().allow(''),
+      state:Joi.string().allow(''),
+      country:Joi.string().allow(''),
+      phone:Joi.string().allow('')
     }
   },
   handler:function(request,reply){
@@ -167,6 +171,10 @@ exports.saveProfile={
                 return Boom.forbidden("Unauthorized action");
             var emailChanged=false;
             usr.name=request.payload.name;
+            usr.city=request.payload.city;
+            usr.country=request.payload.country;
+            usr.state=request.payload.state;
+            usr.phone=request.payload.phone;
             if(usr.email!==request.payload.email) emailChanged=true;
             usr.email=request.payload.email;
             usr.verified=0;

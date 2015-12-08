@@ -17,6 +17,14 @@ var UserSchema = new Schema({
 
   name       : { type: String, required: true },
 
+  city       : {type:String},
+
+  state      : {type:String},
+
+  country    : {type:String},
+
+  phone      : {type:String},
+
 
   verified   : {type:Number,default:0},
 

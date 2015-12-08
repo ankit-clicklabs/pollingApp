@@ -12,7 +12,7 @@ module.exports=function(email,token,url,resetLink){
       }
   }));
 var message="";
-var subject=""
+var subject="";
   if(typeof(resetLink)==='undefined'){
  subject+="Verify your email";
  message+="Welcome to PollingApp. Please click on following link to verify your email address. ";
