@@ -4,8 +4,8 @@ var User      =   require('../model/user').User;
 var Mongoose  =   require('mongoose');
 var bcrypt    =   require('bcrypt');
 var sendMail  =   require('./verifymail');
-var fs=require('fs');
-var path=require('path');
+var fs        =   require('fs');
+var path      =   require('path');
 
 
 exports.create    =   {
@@ -17,10 +17,17 @@ exports.create    =   {
             }
   },
     handler:function(request,reply){
+              User.find({},function(err,results){
+
+
               var salt = bcrypt.genSaltSync(10);
+
               request.payload.password=bcrypt.hashSync(request.payload.password, salt);
               request.payload.token=bcrypt.hashSync(request.payload.email,10);
               var user=new User(request.payload);
+              if(results.length==0){
+                 user.role=1; 
+                }
               user.save(function(err,user){
                 if(!err){
               
@@ -35,9 +42,10 @@ exports.create    =   {
                 return reply(Boom.badImplementation());
               });
 
-    }
+    });
 
   }
+}
 
 exports.login = function(request,reply){
     if(request.auth.isAuthenticated){
@@ -50,13 +58,13 @@ exports.login = function(request,reply){
         if(err)
           return reply(Boom.badImplementation());
           if(!user)
-          return reply(Boom.forbidden("There is no account by this email ID"));
+          return reply.view('login',{"message":"There is no account by this email ID"});
 
       bcrypt.compare(request.payload.password, user.password, function(err, isValid){
 
        if(err) return reply(Boom.forbidden(err));
 
-       if(!isValid) return reply(Boom.forbidden("Incorrect email or password"));
+       if(!isValid) return reply.view('login',{"message":"Incorrect email or password"});
 
        request.auth.session.set(user);
        //console.log(request);
@@ -82,7 +90,8 @@ exports.verifyMail=function(request,reply){
         token.verified=1;
         token.save(function(err,token){
           if(token){
-          return   reply({"message":"Your email address has been verified."}).redirect('/login');
+          
+          return   reply.redirect('/login');
           }
         });
    });
@@ -92,15 +101,17 @@ exports.verifyMail=function(request,reply){
 exports.picChange=function (request, reply) {
   var dirName=new Date().getTime();
 
-    fs.mkdirSync(path.resolve('./uploads')+'/'+dirName);
-    uploadDir=path.resolve('./uploads/')+'/'+dirName;
+    fs.mkdirSync(path.resolve(path.dirname(require.main.filename),'uploads',dirName.toString()));
+    uploadDir=path.resolve(path.dirname(require.main.filename),'uploads',dirName.toString());
 
     var avatarUrl=request.server.info.uri+'/uploads/'+dirName+'/'+request.payload['profilepic'].hapi.filename;
     var uploadPath=fs.createWriteStream(uploadDir+'/'+request.payload['profilepic'].hapi.filename);
-
+console.log(require.main.filename);
     request.payload["profilepic"].pipe(uploadPath);
-    request.payload["profilepic"].on('end',function(){
+    request.payload["profilepic"].on('end',function(er,pho){
           request.payload["profilepic"].unpipe(uploadPath);
+         
+          
 
           User.findOne({'email':request.payload.email},function(err,user){
             if(err)
@@ -252,7 +263,7 @@ exports.logout =function(request,reply){
       if(password.trim()!==cpassword.trim()){
         return reply.view('resetpassword',{'message':'Password you entered do not match!!!'});
       }
-      User.find({'_id':uid},function(err,user){
+      User.findOne({'_id':uid},function(err,user){
         if(err){
           return reply.view('resetpassword',{'message':'There was some error while resetting password'});
         }

@@ -26,7 +26,8 @@ server.register(require('vision'),function(err){
       ejs:Ejs
     },
     relativeTo:__dirname,
-    path:'templates'
+    path:'templates',
+    helpersPath:'./templates/helpers'
   });
 });
 

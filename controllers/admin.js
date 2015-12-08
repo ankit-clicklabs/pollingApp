@@ -5,11 +5,19 @@ var Boom=require('Boom');
 
 exports.newPoll=function(request,reply){
 
+   if(request.auth.credentials.role!==1){
+    return reply(Boom.forbidden("You are not authorized to acess this page!"));
+  }
+
   reply.view('admin/newpoll');
 
 };
 
 exports.polls=function(request,reply){
+  
+   if(request.auth.credentials.role!==1){
+    return reply(Boom.forbidden("You are not authorized to acess this page!"));
+  }
 Poll.find({},function(err,polls){
   if(err)
     return Boom.badImplementation("There was some error while processing your request");
@@ -21,6 +29,9 @@ Poll.find({},function(err,polls){
 };
 
 exports.addNewPoll=function(request,reply){
+   if(request.auth.credentials.role!==1){
+    return reply(Boom.forbidden("You are not authorized to acess this page!"));
+  }
 var newpoll={
 
 };
