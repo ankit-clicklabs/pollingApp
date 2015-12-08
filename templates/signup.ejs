@@ -3,7 +3,11 @@
 <div class="container">
   <div class="row">
   	<div class="col-md-6">
-
+<%
+      var message= message || '';
+      if (message.length > 0) { %>
+               <div class="alert alert-danger"><%= message %></div>
+           <% }  %>
           <form class="form-horizontal" action="" method="POST">
                 <fieldset>
                       <div id="legend">

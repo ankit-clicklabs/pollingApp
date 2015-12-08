@@ -27,11 +27,11 @@ exports.create    =   {
                  sendMail(user.email,user.token,request.server.info.uri);
 
 
-                  return reply({message:"Please check your mail for email-verification link"}).redirect('/login');
+                  return reply.view('login',{message:"Please check your mail for email-verification link"});
 
                 }
                 if(err.code===11000 || err.code===11001 )
-                    return reply(Boom.forbidden("Please provide another user id, it already exists."));
+                    return reply.view('signup',{'message':"Please provide another user id, it already exists."});
                 return reply(Boom.badImplementation());
               });
 
@@ -71,7 +71,7 @@ exports.login = function(request,reply){
 
 exports.verifyMail=function(request,reply){
   var token = request.params.token || encodeURIComponent(request.params.token);
-  console.log(request.info.referrer)
+
 
   User.findOne({'token':token},function(err,token){
      if(err)
@@ -82,7 +82,7 @@ exports.verifyMail=function(request,reply){
         token.verified=1;
         token.save(function(err,token){
           if(token){
-          return   reply.redirect('/login');
+          return   reply({"message":"Your email address has been verified."}).redirect('/login');
           }
         });
    });
@@ -182,3 +182,101 @@ exports.logout =function(request,reply){
     request.auth.session.clear();
     reply.redirect('/login');
   };
+
+  exports.forgotPassword = function(request,reply){
+      return reply.view('forgotpassword');
+  }
+
+  exports.sendResetLink = {
+      validate:{
+        payload:{
+          email:Joi.string().email().required()
+        }
+      },
+      handler:function(request,reply){
+        var email=request.payload.email;
+        email=email.toLowerCase();
+        User.findOne({'email':email},function(err,user){
+            if(err){
+              return Boom.badImplementation("There was some error while processing your request!");
+            }
+            if(!user){
+              return reply.view('forgotpassword',{'message':'There is no user with this email'});
+            }
+            sendMail(user.email,user.token,request.server.info.uri,true);
+            return reply.view('forgotpassword',{'message':'A link to reset your password has been sent to your email address.'});
+        });
+      }
+
+  }
+
+  exports.resetPass = function(request,reply){
+
+    var token = request.params.token || encodeURIComponent(request.params.token);
+
+
+  User.findOne({'token':token},function(err,token){
+     if(err){
+        return Boom.badImplementation();
+      }
+        if(!token){
+        return Boom.forbidden("Invalid token.");
+        }
+       return reply.view('resetpassword',{user:token._id});
+   });
+  };
+
+  exports.changePassword = {
+    
+    validate :{
+
+      payload:{
+
+        uid : Joi.string().required(),
+
+        password:Joi.string().required(),
+        
+        cpassword:Joi.string().required()
+      }
+
+    },
+
+    handler:function(request,reply){
+
+      var password=request.payload.password;
+
+      var cpassword=request.payload.cpassword;
+
+      var uid=request.payload.uid.trim;
+
+      if(password.trim()!==cpassword.trim()){
+        return reply.view('resetpassword',{'message':'Password you entered do not match!!!'});
+      }
+      User.find({'_id':uid},function(err,user){
+        if(err){
+          return reply.view('resetpassword',{'message':'There was some error while resetting password'});
+        }
+        if(!user){
+          return reply.view('resetpassword',{'message':'There was some erorr while resetting password'});
+        }
+        var salt = bcrypt.genSaltSync(10);
+
+        password=bcrypt.hashSync(password, salt);
+
+        user.password=password;
+
+        user.save(function(err,user){
+          if(err){
+            
+            return reply.view('resetpassword',{'message':'Your password could not be reset.Try again later'});
+
+          }
+          return reply.view('/login',{'message':'Your password has been reset.'});
+        });
+              
+
+      });
+
+    }
+  }
+

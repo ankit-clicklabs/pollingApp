@@ -14,9 +14,12 @@ module.exports.endpoints=[
 
   { method:'GET',path:'/login',handler:function(request,reply){ 
       var message=''; 
+      var successMessage='';
       if(request.server.info.uri+'/signup'===request.info.referrer){
            message="Please check your inbox for email verification link";
         };
+        console.log(request);
+
       reply.view('login',{message:message})} },
 
   {method:'GET',path:'/verifymail/{token?}',handler:UserCont.verifyMail},
@@ -47,5 +50,14 @@ module.exports.endpoints=[
 
   {method: 'GET',path: '/uploads/{param1*}',handler: {directory: {path: 'uploads',listing:true}}},
 
-  {method: 'GET',path: '/public/{param*}',handler:{directory:{path:'public',listing:true}}}
+  {method: 'GET',path: '/public/{param*}',handler:{directory:{path:'public',listing:true}}},
+
+  
+  { method:'GET', path: '/forgotpassword', handler:UserCont.forgotPassword },
+
+  { method: 'POST', path :'/forgotpassword', config:UserCont.sendResetLink },
+
+  { method:'GET', path:'/resetpassword/{token?}', handler:UserCont.resetPass },
+
+  { method: 'POST', path: '/resetpassword/{token?}', config : UserCont.changePassword },
 ]
