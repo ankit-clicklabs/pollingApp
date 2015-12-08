@@ -41,7 +41,8 @@ server.register(require('hapi-auth-cookie'), function (err) {
         password: 'secret',
         cookie: 'pollingAPP',
         redirectTo: '/login',
-        isSecure: false
+        isSecure: false,
+       
         
     });
 });

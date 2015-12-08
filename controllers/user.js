@@ -52,7 +52,7 @@ exports.login = function(request,reply){
        //return reply.redirect('/profile')
     }
 
- 
+ console.log(request.payload);
 
     User.findOne({'email':request.payload.email},function(err,user){
         if(err)
@@ -67,6 +67,9 @@ exports.login = function(request,reply){
        if(!isValid) return reply.view('login',{"message":"Incorrect email or password"});
 
        request.auth.session.set(user);
+        if(request.payload.remember=='on'){
+          request.auth.session.ttl(7*24*60*1000);
+        }
        //console.log(request);
 
        return reply.redirect('/profile');
@@ -90,7 +93,7 @@ exports.verifyMail=function(request,reply){
         token.verified=1;
         token.save(function(err,token){
           if(token){
-          
+
           return   reply.redirect('/login');
           }
         });
