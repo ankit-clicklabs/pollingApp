@@ -15,8 +15,6 @@ module.exports.endpoints=[
   { method:'POST',path:'/votePoll',config:{auth:'session'},handler:Poll.voteAnswer },
 
   { method:'GET',path:'/login',handler:function(request,reply){ 
-      var message=''; 
-      var successMessage='';
       
         
 
