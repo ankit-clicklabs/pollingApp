@@ -14,11 +14,7 @@ module.exports.endpoints=[
 
   { method:'POST',path:'/votePoll',config:{auth:'session'},handler:Poll.voteAnswer },
 
-  { method:'GET',path:'/login',handler:function(request,reply){ 
-      
-        
-
-      reply.view('login',{message:message})} },
+  { method:'GET',path:'/login',handler:function(request,reply){ reply.view('login',{message:message})} },
 
   { method:'GET',path:'/verifymail/{token?}',handler:UserCont.verifyMail },
 
