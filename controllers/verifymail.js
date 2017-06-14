@@ -15,7 +15,7 @@ var message="";
 var subject="";
   if(typeof(resetLink)==='undefined'){
  subject+="Verify your email";
- message+="Welcome to PollingApp. Please click on following link to verify your email address. ";
+ message+="Welcome to PollingApp. Please click on the following link to verify your email address. ";
  message+=url+'/verifymail/'+encodeURIComponent(token);
 }
 else{

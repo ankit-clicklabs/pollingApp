@@ -34,6 +34,16 @@ server.register(require('vision'),function(err){
 server.connection({port:app.config.server.port});
 
 server.register(Inert, function () {});
+server.register({
+    register: require('yar'),
+    options: {
+    storeBlank: false,
+    cookieOptions: {
+        password: 'jakdfjkaIndioank',
+        isSecure: true
+    }
+}
+}, function (err) { });
 
 server.register(require('hapi-auth-cookie'), function (err) {
 
@@ -42,12 +52,14 @@ server.register(require('hapi-auth-cookie'), function (err) {
         cookie: 'pollingAPP',
         redirectTo: '/login',
         isSecure: false,
-       
-        
+
+
     });
 });
 
 server.route(Routes.endpoints);
+
+
 
 
 

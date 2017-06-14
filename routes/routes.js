@@ -10,17 +10,19 @@ var path = require('path');
 
 module.exports.endpoints=[
 
-  { method:'GET',path:'/',handler:function(request,reply){reply.view('index')} },
+  { method:'GET',path:'/',handler:function(request,reply){console.log(request.auth.isAuthenticated);
+   console.log(request.auth.credentials);reply.view('index')} },
 
   { method:'POST',path:'/votePoll',config:{auth:'session'},handler:Poll.voteAnswer },
 
-  { method:'GET',path:'/login',handler:function(request,reply){ 
+  { method:'GET',path:'/login',config:{handler:function(request,reply){ 
+   
       var message=''; 
       var successMessage='';
       
         
 
-      reply.view('login',{message:message})} },
+      reply.view('login',{message:message})} } },
 
   { method:'GET',path:'/verifymail/{token?}',handler:UserCont.verifyMail },
 

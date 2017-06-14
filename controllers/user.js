@@ -15,7 +15,7 @@ exports.create    =   {
               password:Joi.string().required(),
               name:Joi.string().required()
             }
-  },
+    },
     handler:function(request,reply){
               User.find({},function(err,results){
 
@@ -52,7 +52,7 @@ exports.login = function(request,reply){
        //return reply.redirect('/profile')
     }
 
- console.log(request.payload);
+
 
     User.findOne({'email':request.payload.email},function(err,user){
         if(err)
@@ -139,7 +139,7 @@ exports.picChange=function (request, reply) {
 exports.profile = function(request,reply){
 
   var userId=request.auth.credentials.email;
-
+ var error = request.session.flash('error') || '';
   User.findOne({'email':userId},function(err,userdata){
     if(err) return Boom.forbidden("You are not authorized to access this page!!");
     if(!userdata) return Boom.forbidden("There was some error while loggin you in!");
@@ -153,15 +153,21 @@ exports.profile = function(request,reply){
 exports.saveProfile={
   validate:{
     payload:{
-      email:Joi.string().required(),
+      email:Joi.string().email().required(),
       userId:Joi.string().required(),
       name:Joi.string().required(),
       city:Joi.string().allow(''),
       state:Joi.string().allow(''),
       country:Joi.string().allow(''),
       phone:Joi.string().allow('')
+    },
+    failAction: function (request, reply, source, error) {
+        request.session.flash('error', 'There was an error.');
+       return reply.redirect('/profile')
     }
   },
+ 
+    
   handler:function(request,reply){
       var uid=request.payload.userId;
       User.findOne({'email':uid},function(err,usr){
@@ -175,9 +181,10 @@ exports.saveProfile={
             usr.country=request.payload.country;
             usr.state=request.payload.state;
             usr.phone=request.payload.phone;
-            if(usr.email!==request.payload.email) emailChanged=true;
-            usr.email=request.payload.email;
-            usr.verified=0;
+            if(usr.email!==request.payload.email){ emailChanged=true;
+            usr.email=request.payload.email;usr.verified=0;
+            usr.token=bcrypt.hashSync(request.payload.email,10);
+          }
 
             if(emailChanged==true){
                 User.findOne({'email':request.payload.email},function(err,em){
@@ -187,7 +194,7 @@ exports.saveProfile={
                 });
             }
             usr.save(function(err,usrd){
-
+                console.log(request.session.messg);
                   if(err || !usrd) return Boom.badImplementation("Could not save profile info");
                   if(emailChanged==true)  sendMail(usrd.email,usrd.token,request.server.info.uri);
                   request.auth.session.clear();
@@ -196,6 +203,7 @@ exports.saveProfile={
 
             });
       });
+
   }
 
 };
